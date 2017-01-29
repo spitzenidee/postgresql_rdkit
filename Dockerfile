@@ -1,5 +1,5 @@
 FROM postgres:9.6
-MAINTAINER Michael Spitzer <michaelspitzer73@gmail.com>
+MAINTAINER Michael Spitzer <professa@gmx.net>
 
 #######################################################################
 # WARNING this may take about an hour to build.
