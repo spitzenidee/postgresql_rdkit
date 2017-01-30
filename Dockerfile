@@ -49,7 +49,7 @@ RUN git clone -b $RDKIT_BRANCH --single-branch https://github.com/rdkit/rdkit.gi
 # Make and install rdkit, including the postgresql cartridge
 RUN mkdir $RDBASE/build
 WORKDIR $RDBASE/build
-RUN cmake -DRDK_BUILD_INCHI_SUPPORT=ON -DRDK_BUILD_PGSQL=ON -DRDK_BUILD_AVALON_SUPPORT=ON -DPostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/9.6/server" -DPostgreSQL_ROOT="/usr/lib/postgresql/9.6" .. && make -j 3 && make install && sh Code/PgSQL/rdkit/pgsql_install.sh
+RUN cmake -DRDK_BUILD_INCHI_SUPPORT=ON -DRDK_BUILD_PGSQL=ON -DRDK_BUILD_AVALON_SUPPORT=ON -DPostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/9.6/server" -DPostgreSQL_ROOT="/usr/lib/postgresql/9.6" .. && make -j 2 && make install && sh Code/PgSQL/rdkit/pgsql_install.sh
 
 #######################################################################
 # Create a standard schema "chemical", and create the rdkit extension within, so there is an example to directly start with
