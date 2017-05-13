@@ -1,4 +1,4 @@
-FROM postgres:9.6
+FROM postgres:9.6.2
 MAINTAINER Michael Spitzer <professa@gmx.net>
 
 #######################################################################
