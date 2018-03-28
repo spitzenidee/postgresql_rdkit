@@ -1,4 +1,4 @@
-FROM postgres:9.6.5
+FROM postgres:9.6.8
 MAINTAINER Michael Spitzer <professa@gmx.net>
 
 #######################################################################
@@ -18,27 +18,27 @@ ENV PGPASSWORD="$POSTGRES_PASSWORD"
 ENV PGUSER="$POSTGRES_USER"
 
 #######################################################################
-# Pull the latest rdkit distribution (master branch) from github.
-# Build with INCHI and AVALON support and directly install the pgsql
-# cartridge. Then clean up:
-ENV RDKIT_BRANCH="master"
-
-WORKDIR /opt
+# Specify the RDKit release from github we want to pull.
+ENV RDKIT_BRANCH="2017_09_3"
 
 #######################################################################
-# Prepare the build requirements for the rdkit compilation:
-RUN apt-get update && apt-get install -y \
+# Prepare the build requirements for the RDKit compilation:
+WORKDIR $RDBASE
+RUN apt-get update && \
+    apt-get install -y \
     postgresql-server-dev-all \
     postgresql-client \
     postgresql-plpython-9.6 \
     postgresql-plpython3-9.6 \
     git \
     cmake \
+    wget \
     build-essential \
     python-numpy \
     python-dev \
     sqlite3 \
     libsqlite3-dev \
+    libboost-all-dev \
     libboost-dev \
     libboost-system-dev \
     libboost-thread-dev \
@@ -47,16 +47,18 @@ RUN apt-get update && apt-get install -y \
     libboost-regex-dev \
     libeigen3-dev && \
 # Cloning RDKit git repo:
-    git clone -b $RDKIT_BRANCH --single-branch https://github.com/rdkit/rdkit.git && \
+    wget https://github.com/rdkit/rdkit/archive/Release_$RDKIT_BRANCH.tar.gz && \
+    tar xzf Release_$RDKIT_BRANCH.tar.gz -C . --strip-components=1 && \
     mkdir $RDBASE/build && \
     cd $RDBASE/build && \
-# Compiling and installing RDKit:
+# Compiling and installing RDKit (incl. INCHI / AVALON / PGSQL support):
     cmake \
       -DRDK_BUILD_INCHI_SUPPORT=ON \
       -DRDK_BUILD_PGSQL=ON \
       -DRDK_BUILD_AVALON_SUPPORT=ON \
       -DPostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/9.6/server" \
       -DPostgreSQL_ROOT="/usr/lib/postgresql/9.6" .. && \
+# Now make / build and use all available cores / threads via "nproc":
     make -j `nproc` && \
     make install && \
 # Installing RDKit Postgresql extension:
@@ -65,10 +67,9 @@ RUN apt-get update && apt-get install -y \
     make clean && \
     cd $RDBASE && \
     rm -r $RDBASE/build && \
-    apt-get remove -y git cmake build-essential && \
+    apt-get remove -y git wget cmake build-essential && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     apt-get purge && \
     rm -rf /var/lib/apt/lists/*
-
 # Done.
