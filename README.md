@@ -4,7 +4,7 @@
 Versions currently in this image:
 * RDKIT (https://github.com/rdkit/rdkit): 2017.09.3
 * PG_CRON (https://github.com/citusdata/pg_cron): 1.0.2
-* PGSQL_HTTP (): 1.2.2
+* PGSQL_HTTP (https://github.com/pramsey/pgsql-http): 1.2.2
 * POWA (https://github.com/powa-team/powa): 1.2.2 / 3.1.1 (POWA archivist)
 
 You can find the image on Dockerhub here:
