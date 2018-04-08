@@ -1,4 +1,4 @@
-FROM postgres:9.6.8
+FROM spitzenidee/postgresql_base:10.3
 MAINTAINER Michael Spitzer <professa@gmx.net>
 
 #######################################################################
@@ -12,11 +12,10 @@ MAINTAINER Michael Spitzer <professa@gmx.net>
 ENV RDBASE="/opt/rdkit"
 ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$RDBASE/lib:/usr/lib/x86_64-linux-gnu"
 ENV PYTHONPATH="$PYTHONPATH:$RDBASE"
-ENV PostgreSQL_ROOT="/usr/lib/postgresql/9.6"
-ENV PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/9.6/server"
+ENV PostgreSQL_ROOT="/usr/lib/postgresql/10"
+ENV PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/10/server"
 ENV PGPASSWORD="$POSTGRES_PASSWORD"
 ENV PGUSER="$POSTGRES_USER"
-
 #######################################################################
 # Specify the RDKit release from github we want to pull.
 ENV RDKIT_BRANCH="2017_09_3"
@@ -24,16 +23,12 @@ ENV RDKIT_BRANCH="2017_09_3"
 #######################################################################
 # Prepare the build requirements for the RDKit compilation:
 WORKDIR $RDBASE
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cmake wget build-essential ca-certificates \
     postgresql-server-dev-all \
     postgresql-client \
-    postgresql-plpython-9.6 \
-    postgresql-plpython3-9.6 \
-    git \
-    cmake \
-    wget \
-    build-essential \
+    postgresql-plpython-10 \
+    postgresql-plpython3-10 \
     python-numpy \
     python-dev \
     sqlite3 \
@@ -56,8 +51,8 @@ RUN apt-get update && \
       -DRDK_BUILD_INCHI_SUPPORT=ON \
       -DRDK_BUILD_PGSQL=ON \
       -DRDK_BUILD_AVALON_SUPPORT=ON \
-      -DPostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/9.6/server" \
-      -DPostgreSQL_ROOT="/usr/lib/postgresql/9.6" .. && \
+      -DPostgreSQL_TYPE_INCLUDE_DIR=$PostgreSQL_TYPE_INCLUDE_DIR \
+      -DPostgreSQL_ROOT=$PostgreSQL_ROOT .. && \
 # Now make / build and use all available cores / threads via "nproc":
     make -j `nproc` && \
     make install && \
@@ -67,7 +62,7 @@ RUN apt-get update && \
     make clean && \
     cd $RDBASE && \
     rm -r $RDBASE/build && \
-    apt-get remove -y git wget cmake build-essential && \
+    apt-get remove -y cmake wget build-essential ca-certificates && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     apt-get purge && \
