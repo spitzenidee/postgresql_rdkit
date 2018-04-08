@@ -1,5 +1,5 @@
 # A Postgresql Image including the RDKit chemical cartridge...
-...as well as some base extensions (pg_cron, pgsql_http, POWA).
+...as well as some base extensions (pg_cron, pgsql_http, POWA -> https://github.com/spitzenidee/postgresql_base).
 
 Versions currently in this image:
 * RDKIT (https://github.com/rdkit/rdkit): 2017.09.3
