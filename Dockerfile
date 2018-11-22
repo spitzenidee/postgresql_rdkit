@@ -1,4 +1,4 @@
-FROM spitzenidee/postgresql_base:10.3
+FROM spitzenidee/postgresql_base:11
 MAINTAINER Michael Spitzer <professa@gmx.net>
 
 #######################################################################
@@ -12,13 +12,13 @@ MAINTAINER Michael Spitzer <professa@gmx.net>
 ENV RDBASE="/opt/rdkit"
 ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$RDBASE/lib:/usr/lib/x86_64-linux-gnu"
 ENV PYTHONPATH="$PYTHONPATH:$RDBASE"
-ENV PostgreSQL_ROOT="/usr/lib/postgresql/10"
-ENV PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/10/server"
+ENV PostgreSQL_ROOT="/usr/lib/postgresql/11"
+ENV PostgreSQL_TYPE_INCLUDE_DIR="/usr/include/postgresql/11/server"
 ENV PGPASSWORD="$POSTGRES_PASSWORD"
 ENV PGUSER="$POSTGRES_USER"
 #######################################################################
 # Specify the RDKit release from github we want to pull.
-ENV RDKIT_BRANCH="2017_09_3"
+ENV RDKIT_BRANCH="2018_09_1"
 
 #######################################################################
 # Prepare the build requirements for the RDKit compilation:
